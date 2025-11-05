@@ -37,22 +37,29 @@ if uploaded_files:
             return None
     data["Total Seconds"] = data["Total Time"].apply(parse_time)
 
-    st.subheader("📊 Statistiche generali")
-    col1, col2, col3 = st.columns(3)
-    col1.metric("Numero sessioni", len(data))
-    col2.metric("Durata media (s)", f"{data['Total Seconds'].mean():.2f}" if data['Total Seconds'].notna().any() else "-")
-    col3.metric("Velocità media (km/h)", f"{data['Average Speed (km/h)'].mean():.2f}" if 'Average Speed (km/h)' in data else "-")
+st.subheader("📊 Statistiche generali")
 
-    st.divider()
+# --- conversione data e tempo ---
+data['Date'] = pd.to_datetime(data['Date'], errors='coerce')
 
-    # --- Tabelle riassuntive ---
-    st.subheader("📈 Statistiche dettagliate")
-
-    # Gestisce eventuali differenze di versione di pandas
+def parse_time(t):
     try:
-        st.dataframe(data.describe(include='all', datetime_is_numeric=True))
-    except TypeError:
-        st.dataframe(data.describe(include='all'))
+        m, s = t.split(":")
+        return float(m) * 60 + float(s)
+    except:
+        return None
+
+data["Durata (s)"] = data["Total Time"].apply(parse_time)
+
+# --- calcoli base ---
+giorni_unici = data['Date'].dt.date.nunique()
+primo_giorno = data['Date'].min()
+ultimo_giorno = data['Date'].max()
+
+col1, col2, col3 = st.columns(3)
+col1.metric("📆 Giorni di utilizzo", giorni_unici)
+col2.metric
+
 
 
     st.divider()
@@ -81,6 +88,7 @@ if uploaded_files:
 
 else:
     st.info("⬆️ Carica almeno un file CSV per iniziare l'analisi.")
+
 
 
 
