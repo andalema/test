@@ -47,10 +47,10 @@ if uploaded_files:
 
     # --- Tabelle riassuntive ---
     st.subheader("📈 Statistiche dettagliate")
-   try:
-    st.dataframe(data.describe(include='all', datetime_is_numeric=True))
-except TypeError:
-    st.dataframe(data.describe(include='all'))
+      try:
+       st.dataframe(data.describe(include='all', datetime_is_numeric=True))
+      except TypeError:
+       st.dataframe(data.describe(include='all'))
 
 
     st.divider()
@@ -79,4 +79,5 @@ except TypeError:
 
 else:
     st.info("⬆️ Carica almeno un file CSV per iniziare l'analisi.")
+
 
